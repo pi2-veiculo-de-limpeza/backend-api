@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    @user = create_token_params(user_params, @user)
+    #@user = create_token_params(user_params, @user)
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
       render json: @user.errors, status: :unprocessable_entity
     end
   end
-
+   
   # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
@@ -51,12 +51,12 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password)
     end
 
-    def create_token_params(api_user_params, api_user)
-      random_string = (0..7).map { ('a'..'z').to_a[rand(26)] }.join
-      api_user.secret = BCrypt::Password.create(random_string)
-      payload = { name: api_user_params[:name], email: api_user_params[:email] }
-      api_user.token = JWT.encode payload, api_user.secret, 'HS256'
-      api_user
-    end
+    #def create_token_params(api_user_params, api_user)
+    #  random_string = (0..7).map { ('a'..'z').to_a[rand(26)] }.join
+    #  api_user.secret = BCrypt::Password.create(random_string)
+    #  payload = { name: api_user_params[:name], email: api_user_params[:email] }
+    #  api_user.token = JWT.encode payload, api_user.secret, 'HS256'
+    #  api_user
+    #end
     
 end
