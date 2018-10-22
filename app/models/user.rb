@@ -20,7 +20,7 @@ class User
     	self.secret = BCrypt::Password.create(random_string)
     	payload = { name: self.name, email: self.email }
     	self.token = JWT.encode payload, self.secret, 'HS256'
-    #end while(User.exists?(token: self.token))	
+    #end while User.exists?(token: self.token)	
   end
 
   def authenticate? password

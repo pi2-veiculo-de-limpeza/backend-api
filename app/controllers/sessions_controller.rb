@@ -10,6 +10,16 @@ class SessionsController < ApplicationController
 		end
 	end
 
+	def destroy
+		user = User.find_by(token: params['token'])
+		if user
+			user.logged_on = false
+			user.save!
+			head 204
+		end
+
+	end
+
 	private
 
 	def session_params
