@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all.pluck(:id, :name, :email, :history)
+    @users = User.all
 
     render json: @users
   end
