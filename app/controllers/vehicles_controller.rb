@@ -1,9 +1,11 @@
 class VehiclesController < ApplicationController
   before_action :set_vehicle, only: [:show, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:index]
 
   # GET /vehicles
   def index
-    @vehicles = Vehicle.all
+
+    @vehicles = Vehicle.do_user(current_user.id)
 
     render json: @vehicles
   end
@@ -18,6 +20,7 @@ class VehiclesController < ApplicationController
     @vehicle = Vehicle.new(vehicle_params)
 
     if @vehicle.save
+      @vehicle.create_historic current_user
       render json: @vehicle, status: :created, location: @vehicle
     else
       render json: @vehicle.errors, status: :unprocessable_entity
@@ -46,6 +49,6 @@ class VehiclesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def vehicle_params
-      params.require(:vehicle).permit(:code, :name, :historic, :speed, :token, :secret, :user_id)
+      params.require(:vehicle).permit(:code, :name, :historic, :speed, :user_id)
     end
 end

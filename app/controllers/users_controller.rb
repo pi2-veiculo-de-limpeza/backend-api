@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show]
+  before_action :authenticate_with_token!, only: [:update, :destroy]
+
 
   # GET /users
   def index
@@ -10,7 +12,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    render json: @user.pluck(:id, :name, :email, :history)
+    render json: @user
   end
 
   # POST /users
@@ -28,16 +30,20 @@ class UsersController < ApplicationController
    
   # PATCH/PUT /users/1
   def update
+
+    @user = current_user
+
     if @user.update(user_params)
       render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
+  
   end
 
   # DELETE /users/1
   def destroy
-    @user.destroy
+    current_user.destroy
   end
 
   private

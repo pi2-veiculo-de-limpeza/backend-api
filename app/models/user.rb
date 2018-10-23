@@ -8,6 +8,8 @@ class User
   field :history,  type: Array,  default:nil
   field :logged_on, type:Boolean, default:false
 
+  has_many :vehicles
+
   #validates
 
   validates_uniqueness_of :email

@@ -1,12 +1,13 @@
 class SessionsController < ApplicationController
+
 	def create
-		@user = User.find_by(email: session_params['email'])
-		if @user and @user.authenticate?(session_params[:password])
+		@user = User.where(email: session_params['email']).first
+		if not @user.nil? and @user.authenticate?(session_params[:password])
 			@user.logged_on = true
 			@user.save!
 			render json: @user, status: 200
 		else
-			render json: "email ou senha incorretos", status: 404
+			render json: {erro: "email ou senha incorretos"}, status: 404
 		end
 	end
 
