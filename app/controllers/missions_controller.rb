@@ -1,5 +1,6 @@
 class MissionsController < ApplicationController
   before_action :set_mission, only: [:show, :update, :destroy]
+  before_action :authenticate_with_token!
 
   # GET /missions
   def index
@@ -15,13 +16,51 @@ class MissionsController < ApplicationController
 
   # POST /missions
   def create
-    @mission = Mission.new(mission_params)
 
-    if @mission.save
-      render json: @mission, status: :created, location: @mission
+    if params['name'].nil?
+      render json: {errors: "Nome não deve está em branco!"}, status: :unprocessable_entity
+    elsif params['vehicle_id'].nil?
+      render json: {errors: "selecione um veículo para executar essa missão!"}, status: :unprocessable_entity
+    elsif params['area_mission'].nil?
+      render json: {errors: "você deve fornecer a area da missão!"}, status: :unprocessable_entity
     else
-      render json: @mission.errors, status: :unprocessable_entity
+
+      vehicle = Vehicle.find(params['vehicle_id'])
+
+      if vehicle.nil?
+        render json: {errors: "O veículo que você enviou não existe, por favor repita a operação!"}, status: :unprocessable_entity
+        return
+      end
+
+      area_mission_of_params = params['area_mission']
+      area_mission = []
+
+      area_mission_of_params.each do |area|
+        if area.to_f > 0
+          area_mission << area.to_f
+        else
+          render json: {errors: "por favor você inseriu valores errados na area da missão"}, status: :unprocessable_entity
+          return
+        end
+      end
+
+      @mission = Mission.new
+
+      @mission.name = params['name']
+      @mission.vehicle_id = vehicle.id
+      @mission.area_mission = area_mission
+
+      puts area_mission
+    
+      if @mission.save
+        @mission.create_historic current_user
+        render json: @mission, status: :created, location: @mission
+      else
+        render json: @mission.errors, status: :unprocessable_entity
+      end
     end
+
+      
   end
 
   # PATCH/PUT /missions/1
@@ -46,6 +85,6 @@ class MissionsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def mission_params
-      params.require(:mission).permit(:mapa_mission, :name, :area_mission, :time_conclusion, :time_travel, :status, :historic)
+      params.require(:mission).permit(:name, :area_mission, :vehicle_id)
     end
 end

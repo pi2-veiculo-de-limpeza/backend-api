@@ -19,8 +19,8 @@ class Vehicle
     self.historic = []
     historic = {
   	 "what" => "inseriu um novo veiculo",
-  	 "who_vehicle" => current_user.id.to_s,
-  	 "when_vehicle" => Time.now
+  	 "who" => current_user.id.to_s,
+  	 "when" => Time.now
     }
 
   	self.historic << historic
