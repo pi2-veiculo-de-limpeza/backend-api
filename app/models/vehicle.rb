@@ -16,7 +16,7 @@ class Vehicle
   before_save :create_token_vehicle
 
   def create_historic current_user
-    self.historic = []
+    self.historic = [] if self.historic.nil?
     historic = {
   	 "what" => "inseriu um novo veiculo",
   	 "who" => current_user.id.to_s,

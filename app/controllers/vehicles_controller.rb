@@ -41,6 +41,24 @@ class VehiclesController < ApplicationController
     @vehicle.destroy
   end
 
+  #outros metodos
+
+  def all_missions_vehicle
+    if params['id']
+      vehicle_id = params['id']
+
+      @missions = Mission.do_vehicle(vehicle_id)
+
+      if @missions
+        render json: @missions, status: 200
+      else
+        render json: {errors: "nenhuma missão encontrada para os veiculos selecionados"}, status: 201
+      end
+    else
+      render json: {errors: "selecione o veículo que deseja ver as missões"}, status: 201
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle
