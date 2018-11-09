@@ -1,24 +1,19 @@
-# README
+# Docker para desenvolvedores Ruby on Rails
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Use Docker no seu ambiente de desenvolvimento e produção com aplicações Ruby on Rails.
 
-Things you may want to cover:
+O curso visa mostrar aos alunos como dar os primeiros passos com o Docker para seu uso tanto em ambiente de desenvolvimento como em produção. Serão abordados assuntos como: Conceitos iniciais do Docker, Dockerfile, Docker Hub, Docker Compose, Volumes, Networks, Ports, etc. É importante perceber que o curso NÃO abordará "Orquestração de Containers" , sendo assim, ferramentas como Swarm e Kubernetes não farão parte do escopo desse curso.
 
-* Ruby version
+Deseja adquirir o curso? Acesse o link abaixo e saiba como.
 
-* System dependencies
+>> [Docker para desenvolvedores Ruby on Rails](http://videosdeti.com.br/curso-docker-rails.html)
 
-* Configuration
+* Comandos para Produção
 
-* Database creation
+```
+docker-compose run app bundle exec rails assets:precompile RAILS_ENV=production
 
-* Database initialization
+docker-compose run app bundle exec rails db:create RAILS_ENV=production
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+docker-compose run app bundle exec rails db:migrate RAILS_ENV=production
+```
