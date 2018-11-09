@@ -8,12 +8,29 @@ class User
   field :history,  type: Array,  default:nil
   field :logged_on, type:Boolean, default:false
 
+  has_many :vehicles
+
+  #validates
+
+  validates_uniqueness_of :email
+
   before_save :create_token
 
   def create_token
-  	random_string = (0..7).map { ('a'..'z').to_a[rand(26)] }.join
-    self.secret = BCrypt::Password.create(random_string)
-    payload = { name: self.name, email: self.email }
-    self.token = JWT.encode payload, self.secret, 'HS256'
-  end 
+  	#begin
+  		random_string = (0..7).map { ('a'..'z').to_a[rand(26)] }.join
+    	self.secret = BCrypt::Password.create(random_string)
+    	payload = { name: self.name, email: self.email }
+    	self.token = JWT.encode payload, self.secret, 'HS256'
+    #end while User.exists?(token: self.token)	
+  end
+
+  def authenticate? password
+  	if password == self.password
+  		true
+  	else
+  		false
+  	end
+  end
+
 end
