@@ -7,9 +7,9 @@ class Mission
   STATUS_CANCELADO = "Cancelado"
 
 
-  field :mapa_mission, type: Array, default: nil
+  field :coordenates, type: Array, default: nil #[{"longetude": 234, "latitude": 234}, {"longetude": 123, "latitude": 123}, {"longetude": 123, "latitude": 123}, {"longetude": 123, "latitude": 123}]
   field :name, type: String
-  field :area_mission, type: Array
+  field :area_mission, type: Array, default: nil
   field :time_conclusion, type: Time, default:nil
   field :time_travel, type: Time, default: nil
   field :status, type: String, default: STATUS_CREATE
@@ -18,8 +18,9 @@ class Mission
 
   belongs_to :vehicle
 
+
   validates :name, presence: true
-  validates :area_mission, presence: true
+  #validates :area_mission, presence: true
 
   scope :do_vehicle, ->(vehicle_id) { self.and(:vehicle_id => vehicle_id) }
   scope :dos_vehicles, ->(vehicles_ids) { self.and(:vehicle_id.in => vehicles_ids) }

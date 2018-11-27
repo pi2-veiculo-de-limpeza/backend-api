@@ -8,6 +8,8 @@ class Vehicle
   field :token, type: String
   field :secret, type: String
 
+  # validações
+
   # relacionamentos
   belongs_to :user
 

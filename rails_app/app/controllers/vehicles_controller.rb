@@ -1,6 +1,6 @@
 class VehiclesController < ApplicationController
   before_action :set_vehicle, only: [:show, :update, :destroy]
-  before_action :authenticate_with_token!, only: [:index]
+  before_action :authenticate_with_token!, only: [:index, :create]
 
   # GET /vehicles
   def index
@@ -17,7 +17,19 @@ class VehiclesController < ApplicationController
 
   # POST /vehicles
   def create
-    @vehicle = Vehicle.new(vehicle_params)
+
+    @user = current_user
+    
+    if @user.nil?
+      render json: {errors: "você precisa esta logado para realizar o cadastro"}, status: 404
+    end
+    
+
+    if params["code"] and params["name"] and params["speed"] and @user
+      @vehicle = Vehicle.new(code:params['code'], name:params['name'], speed:params["speed"], user_id:@user.id)
+    else
+      render status: :unprocessable_entity
+    end
 
     if @vehicle.save
       @vehicle.create_historic current_user
@@ -59,6 +71,15 @@ class VehiclesController < ApplicationController
     end
   end
 
+  # refresh veiculo in map
+  #def vehicle_map
+  #  @mission = params["id"]
+  #  position_latitude = @mission.position_latitude
+  #  position_longetude = @mission.position_longetude
+  #  position = {"latitude": position_latitude, "longetude": position_longetude}
+  #  render json position, status: :200
+  #end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle
@@ -67,6 +88,6 @@ class VehiclesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def vehicle_params
-      params.require(:vehicle).permit(:code, :name, :historic, :speed, :user_id)
+      params.require(:vehicle).permit(:code, :name, :speed, :user_id)
     end
 end

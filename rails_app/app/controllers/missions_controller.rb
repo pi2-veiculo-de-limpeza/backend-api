@@ -41,8 +41,6 @@ class MissionsController < ApplicationController
       render json: {errors: "Nome não deve está em branco!"}, status: :unprocessable_entity
     elsif params['vehicle_id'].nil?
       render json: {errors: "selecione um veículo para executar essa missão!"}, status: :unprocessable_entity
-    elsif params['area_mission'].nil?
-      render json: {errors: "você deve fornecer a area da missão!"}, status: :unprocessable_entity
     else
 
       vehicle = Vehicle.find(params['vehicle_id'])
@@ -52,26 +50,11 @@ class MissionsController < ApplicationController
         return
       end
 
-      area_mission_of_params = params['area_mission']
-      area_mission = []
-
-      area_mission_of_params.each do |area|
-        if area.to_f > 0
-          area_mission << area.to_f
-        else
-          render json: {errors: "por favor você inseriu valores errados na area da missão"}, status: :unprocessable_entity
-          return
-        end
-      end
-
       @mission = Mission.new
 
       @mission.name = params['name']
       @mission.vehicle_id = vehicle.id
       @mission.faz_copia_vehicle vehicle
-      @mission.area_mission = area_mission
-
-      puts area_mission
     
       if @mission.save
         @mission.create_historic current_user
@@ -126,6 +109,28 @@ class MissionsController < ApplicationController
   # DELETE /missions/1
   def destroy
     @mission.destroy
+  end
+
+  def maps_coordenate_save
+    
+    @mission = Mission.find(params['id'])
+
+    if @mission
+      if params["coordenates"]
+        coordenates = []
+        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
+        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
+        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
+        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
+        @mission.coordenates = coordenates
+        @mission.save!
+        redirect_to mission_path @mission
+      else
+        render json: {errors: "você não selecionou a area do mapa"}, status: :unprocessable_entity
+      end
+    else
+      render json: {errors: "Para cadastrar uma coordenada você precisa informar a missão"}, status: :unprocessable_entity
+    end
   end
 
   # metodos auxiliares 
