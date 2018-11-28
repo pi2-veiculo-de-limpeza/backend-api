@@ -7,7 +7,7 @@ class Mission
   STATUS_CANCELADO = "Cancelado"
 
 
-  field :coordenates, type: Array, default: nil #[{"longetude": 234, "latitude": 234}, {"longetude": 123, "latitude": 123}, {"longetude": 123, "latitude": 123}, {"longetude": 123, "latitude": 123}]
+  field :coordinates, type: Array, default: nil #[{"longitude": 234, "latitude": 234}, {"longitude": 123, "latitude": 123}, {"longitude": 123, "latitude": 123}, {"longitude": 123, "latitude": 123}]
   field :name, type: String
   field :area_mission, type: Array, default: nil
   field :time_conclusion, type: Time, default:nil

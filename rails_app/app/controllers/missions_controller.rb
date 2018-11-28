@@ -33,40 +33,7 @@ class MissionsController < ApplicationController
   def show
     render json: @mission
   end
-
-  # POST /missions
-  def create
-
-    if params['name'].nil?
-      render json: {errors: "Nome não deve está em branco!"}, status: :unprocessable_entity
-    elsif params['vehicle_id'].nil?
-      render json: {errors: "selecione um veículo para executar essa missão!"}, status: :unprocessable_entity
-    else
-
-      vehicle = Vehicle.find(params['vehicle_id'])
-
-      if vehicle.nil?
-        render json: {errors: "O veículo que você enviou não existe, por favor repita a operação!"}, status: :unprocessable_entity
-        return
-      end
-
-      @mission = Mission.new
-
-      @mission.name = params['name']
-      @mission.vehicle_id = vehicle.id
-      @mission.faz_copia_vehicle vehicle
-    
-      if @mission.save
-        @mission.create_historic current_user
-        render json: @mission, status: :created, location: @mission
-      else
-        render json: @mission.errors, status: :unprocessable_entity
-      end
-    end
-
-      
-  end
-
+  
   # PATCH/PUT /missions/1
   def update
 
@@ -109,28 +76,6 @@ class MissionsController < ApplicationController
   # DELETE /missions/1
   def destroy
     @mission.destroy
-  end
-
-  def maps_coordenate_save
-    
-    @mission = Mission.find(params['id'])
-
-    if @mission
-      if params["coordenates"]
-        coordenates = []
-        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
-        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
-        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
-        coordenates << {"latitude": params["coordenates"][0]["latitude"], "longetude": params["coordenates"][0]["longetude"]}
-        @mission.coordenates = coordenates
-        @mission.save!
-        redirect_to mission_path @mission
-      else
-        render json: {errors: "você não selecionou a area do mapa"}, status: :unprocessable_entity
-      end
-    else
-      render json: {errors: "Para cadastrar uma coordenada você precisa informar a missão"}, status: :unprocessable_entity
-    end
   end
 
   # metodos auxiliares 

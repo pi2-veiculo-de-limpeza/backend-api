@@ -1,6 +1,6 @@
 class VehiclesController < ApplicationController
   before_action :set_vehicle, only: [:show, :update, :destroy]
-  before_action :authenticate_with_token!, only: [:index, :create]
+  before_action :authenticate_with_token!, only: [:index, :create, :create_mission]
 
   # GET /vehicles
   def index
@@ -68,6 +68,47 @@ class VehiclesController < ApplicationController
       end
     else
       render json: {errors: "selecione o veículo que deseja ver as missões"}, status: 201
+    end
+  end
+
+  def create_mission
+
+    if params['name'].nil?
+      render json: {errors: "Nome não deve está em branco!"}, status: :unprocessable_entity
+    elsif params['id'].nil?
+      render json: {errors: "selecione um veículo para cadastrar essa missão!"}, status: :unprocessable_entity
+    elsif params["coordinates"].nil?
+      render json: {errors: "você não selecionou a area do mapa"}, status: :unprocessable_entity
+    else
+
+      vehicle = Vehicle.find(params['id'])
+
+      if vehicle.nil?
+        render json: {errors: "O veículo que você enviou não existe, por favor repita a operação!"}, status: :unprocessable_entity
+        return
+      end
+
+      coordinates = []
+      coordinates << {"longitude": params["coordinates"][0]["longitude"], "latitude": params["coordinates"][0]["latitude"]}
+      coordinates << {"longitude": params["coordinates"][0]["longitude"], "latitude": params["coordinates"][0]["latitude"]}
+      coordinates << {"longitude": params["coordinates"][0]["longitude"], "latitude": params["coordinates"][0]["latitude"]}
+      coordinates << {"longitude": params["coordinates"][0]["longitude"], "latitude": params["coordinates"][0]["latitude"]}
+      
+
+      @mission = Mission.new
+
+
+      @mission.name = params['name']
+      @mission.vehicle_id = vehicle.id
+      @mission.coordinates = coordinates
+      @mission.faz_copia_vehicle vehicle
+    
+      if @mission.save
+        @mission.create_historic current_user
+        render json: @mission, status: :created
+      else
+        render json: @mission.errors, status: :unprocessable_entity
+      end
     end
   end
 
