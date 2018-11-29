@@ -64,10 +64,10 @@ class VehiclesController < ApplicationController
       if @missions
         render json: @missions, status: 200
       else
-        render json: {errors: "nenhuma missão encontrada para os veiculos selecionados"}, status: 201
+        render json: {errors: "nenhuma missão encontrada para os veiculos selecionados"}, status: 400
       end
     else
-      render json: {errors: "selecione o veículo que deseja ver as missões"}, status: 201
+      render json: {errors: "selecione o veículo que deseja ver as missões"}, status: 400
     end
   end
 
