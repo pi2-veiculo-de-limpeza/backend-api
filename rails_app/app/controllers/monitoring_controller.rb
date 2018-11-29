@@ -1,5 +1,5 @@
 class MonitoringController < ApplicationController
-	before_action :authenticate_with_token_vehicle!
+	before_action :authenticate_with_token_vehicle!, only: [:create_monitoring_weight, :create_monitoring_volume_dump]
 	before_action :authenticate_with_token!, only: [:get_weight, :get_volume_dump]
 	
 	def create_monitoring_weight
@@ -38,6 +38,7 @@ class MonitoringController < ApplicationController
 	end
 
 	def create_monitoring_volume_dump
+		
 
 		if params["volume"].nil?
 			render json: {errors: "você esqueceu de enviar o volume da lixeira"}, status: 400
