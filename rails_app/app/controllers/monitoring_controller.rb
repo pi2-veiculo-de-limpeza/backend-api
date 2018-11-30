@@ -62,11 +62,16 @@ class MonitoringController < ApplicationController
 	end
 
 	def get_volume_dump
-
+		
+		
 		if params["mission_id"]
 			@monitoring_volume = MonitoryVolume.where(mission_id: params["mission_id"]).last
 		else
 			@monitoring_volume = MonitoryVolume.last
 		end
 	end
+
+
+
+	 
 end

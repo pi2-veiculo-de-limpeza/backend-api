@@ -10,5 +10,6 @@ class Monitory
 
    scope :do_vehicle, ->(vehicle_id) {self.and(:vehicle_id=>vehicle_id)}
    scope :da_mission, ->(mission_id) {self.and(:mission_id=>mission_id)}
+   scope :das_missions, ->(mission_ids) {self.and(:mission_id.in=>mission_ids)}
    
 end

@@ -1,6 +1,7 @@
 class MissionsController < ApplicationController
   before_action :set_mission, only: [:show, :update, :destroy]
-  before_action :authenticate_with_token!
+  before_action :authenticate_with_token_vehicle!, only: [:started_mission_now]
+  before_action :authenticate_with_token!, only: [:index, :show, :update, :destroy, :andamento]
 
   # GET /missions
   def index
@@ -76,6 +77,28 @@ class MissionsController < ApplicationController
   # DELETE /missions/1
   def destroy
     @mission.destroy
+  end
+
+  def andamento
+    if params['id']
+      mission_started = Mission.find(params['id'])
+      @missions = Mission.do_vehicle(current_vehicle)
+      @missions.each do |mission|
+        if mission.status == "andamento"
+          mission.status = Mission::STATUS_CANCELADO
+          mission.save!
+        end
+      end
+      mission_started.status = "andamento"
+      if mission_started.save!
+        render status: :created
+      else
+        render json: {errors: "erro ao tentar salvar"}, status: :unprocessable_entity
+      end
+    else
+      render json: {errors: "vc não enviou uma missão valida"}, status: :unprocessable_entity
+    end
+
   end
 
   # metodos auxiliares 
