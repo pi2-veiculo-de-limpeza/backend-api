@@ -69,7 +69,6 @@ class Mission
   end
 
   def calculator_area_mission
-    #api_key = AIzaSyByeOuQgRx0UUJ248GOKmMKN0Df2XwGApM
     if not self.coordinates.nil?
       area_mission = []
       coordinates_array = []
