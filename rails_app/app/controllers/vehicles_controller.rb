@@ -1,6 +1,6 @@
 class VehiclesController < ApplicationController
   before_action :set_vehicle, only: [:show, :update, :destroy]
-  before_action :authenticate_with_token!, only: [:index, :create, :create_mission]
+  before_action :authenticate_with_token!, only: [:index, :create, :create_mission, :faz_map_reduce]
   before_action :authenticate_with_token_vehicle!, only: [:started_mission, :speed]
 
   # GET /vehicles
